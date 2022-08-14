@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,16 +28,28 @@ namespace MSSQL_MYSQL_App
             string address = addressTextBox.Text;
             Guid id = Guid.NewGuid();
 
-            // Not complete. Have to figure out how to to use inputs from Form1 here
-            // Open connection to MSSQL DB
-            string mssql_connection_string = @"Data Source=DESKTOP-81FNLHJ\SQLEXPRESS;Initial Catalog=PersonDb;Integrated Security=True";
-            SqlConnection connection = new SqlConnection(mssql_connection_string);
-            connection.Open();
+            string FilePath = @"C:/Users/Eesa/Desktop/EasySales%20Internship/Projects/MSSQL_MYSQL_App/MSSQL_MYSQL_App/ConfigData.txt";
+            var ConfigData = File.ReadAllLines(FilePath);
+            var ConfigList = new List<string>(ConfigData);
 
-            // Add data to MSSQL DB
-            string query = "INSERT INTO Person (Id,Name,Age,Address) VALUES('" + id + "','" + name + "','" + age + "','" + address + "';";
-            SqlCommand command = new SqlCommand(query, connection);
-            command.ExecuteNonQuery();
+            // Connect to MSSQL DB using user inputs
+            string mssqlUsername = ConfigList[0];
+            string mssqlPassword = ConfigList[1];
+
+            // Open connection to sql server
+            Form1 form1 = new Form1();
+            using (SqlConnection connection = new SqlConnection(form1.ConnectionStrMssql(mssqlUsername, mssqlPassword)))
+            {
+                // Open connection to MSSQL DB
+                connection.Open();
+
+                // Add data to MSSQL DB
+                string query = "INSERT INTO Person (Id,Name,Age,Address) VALUES('" + id + "','" + name + "','" + age + "','" + address + "')";
+                SqlCommand command = new SqlCommand(query, connection);
+                command.ExecuteNonQuery();
+
+                connection.Close();
+            }
 
             ageTextBox.Text = "";
             nameTextBox.Text = "";
@@ -47,7 +60,6 @@ namespace MSSQL_MYSQL_App
             Form3 newForm3 = new Form3();
             newForm3.ShowDialog();
             this.Close();
-
         }
     }
 }

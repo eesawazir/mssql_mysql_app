@@ -31,6 +31,7 @@ namespace MSSQL_MYSQL_App
 
         private void closeCurrentFormOpenFormTwo()
         {
+            // Hide confirm sync form and show data entry form
             this.Hide();
             Form2 newForm2 = new Form2();
             newForm2.ShowDialog();

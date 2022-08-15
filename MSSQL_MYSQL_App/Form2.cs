@@ -38,13 +38,15 @@ namespace MSSQL_MYSQL_App
 
             // Open connection to sql server
             Form1 form1 = new Form1();
-            using (SqlConnection connection = new SqlConnection(form1.ConnectionStrMssql(mssqlUsername, mssqlPassword)))
+            using (SqlConnection connection = new 
+                SqlConnection(form1.ConnectionStrMssql(mssqlUsername, mssqlPassword)))
             {
                 // Open connection to MSSQL DB
                 connection.Open();
 
                 // Add data to MSSQL DB
-                string query = "INSERT INTO Person (Id,Name,Age,Address) VALUES('" + id + "','" + name + "','" + age + "','" + address + "')";
+                string query = string.Format("INSERT INTO Person (Id,Name,Age,Address) " +
+                    "VALUES('{0}','{1}', {2},'{3}')", id, name, age, address);
                 SqlCommand command = new SqlCommand(query, connection);
                 command.ExecuteNonQuery();
 

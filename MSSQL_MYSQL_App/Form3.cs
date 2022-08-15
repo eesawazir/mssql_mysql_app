@@ -31,8 +31,9 @@ namespace MSSQL_MYSQL_App
             string MssqlUsername = ConfigList[0];
             string MssqlPassword = ConfigList[1];
 
-            // Open connection to sql server
+            // Declare Form1 to access connection methods defined there
             Form1 form1 = new Form1();
+
             using (SqlConnection MssqlConnection = new SqlConnection(form1.ConnectionStrMssql(MssqlUsername, MssqlPassword)))
             {
 
@@ -48,31 +49,28 @@ namespace MSSQL_MYSQL_App
                     // Get id's from Mssql
                     string MssqlQuery = "SELECT Id FROM Person";
                     SqlCommand MssqlCommand = new SqlCommand(MssqlQuery, MssqlConnection);
-                    string[] MssqlIdArray = MssqlCommand.ExecuteNonQuery();
+                    string[] MssqlIdArray = MssqlCommand.ExecuteNonQuery(); // Figure out how to execute a SQL command and getting an array of MSSQL id's
 
                     // Get id's from Mysql
                     string MysqlQuery = "SELECT Id FROM person_table";
                     MySqlCommand MysqlCommand = new MySqlCommand(MysqlQuery, MysqlConnection);
-                    string[] MysqlIdArray = MysqlCommand.ExecuteNonQuery();
+                    string[] MysqlIdArray = MysqlCommand.ExecuteNonQuery(); // Figure out how to execute a SQL command and getting an array of MySQL id's
 
-                    // Keep id's which do not exist in MySQL
-                    var MssqlUniqueIdOnly = MssqlIdArray.Except(MysqlIdArray).ToArray;
+                    // Keep MSSQl id's which do not exist in MySQL
+                    var MssqlUniqueIdOnly = MssqlIdArray.Except(MysqlIdArray).ToArray();
 
-                    for (int i = 0; i < MssqlUniqueIdOnly.length; i++)
+                    for (int i = 0; i < MssqlUniqueIdOnly.Length; i++)
                     {
                         // Get record from Mysql with id from MssqlIdOnly array
-                        string MysqlGetRecordQuery = "SELECT Id FROM person_table WHERE Id='" + MssqlUniqueIdOnly[i] + "'";
+                        string MysqlGetRecordQuery = string.Format("SELECT Id FROM person_table WHERE Id='{0}'", MssqlUniqueIdOnly[i]);
                         SqlCommand MssqlGetRecordCommand = new SqlCommand(MysqlGetRecordQuery, MssqlConnection);
-                        string[] MssqlRecordArray = MssqlGetRecordCommand.ExecuteNonQuery();
+                        string[] MssqlRecordArray = MssqlGetRecordCommand.ExecuteNonQuery(); // Figure out how to get record in an array data structure
 
                         // Add data to MySQL DB
-                        string query = "INSERT INTO person_table (Id,Name,Age,Address) " +
-                            "VALUES('" + MssqlRecordArray[0] + "','" + MssqlRecordArray[1] + "','" + 
-                            MssqlRecordArray[2] + "','" + MssqlRecordArray[3] + "')";
-                        MySqlCommand MysqlAddRecordCommand = new MySqlCommand(query, MysqlConnection);
+                        string MysqlAddRecordQuery = string.Format("INSERT INTO person_table (Id,Name,Age,Address) VALUES('{0}','{1}',{2},'{3}')", MssqlRecordArray[0], MssqlRecordArray[1], MssqlRecordArray[2], MssqlRecordArray[3]);
+                        MySqlCommand MysqlAddRecordCommand = new MySqlCommand(MysqlAddRecordQuery, MysqlConnection);
                         MysqlAddRecordCommand.ExecuteNonQuery();
                     }
-
                     MssqlConnection.Close();
                     MysqlConnection.Close();
                 }

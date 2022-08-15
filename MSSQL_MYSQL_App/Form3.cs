@@ -28,21 +28,53 @@ namespace MSSQL_MYSQL_App
             var ConfigList = new List<string>(ConfigData);
 
             // Connect to MSSQL DB using user inputs
-            string mssqlUsername = ConfigList[0];
-            string mssqlPassword = ConfigList[1];
+            string MssqlUsername = ConfigList[0];
+            string MssqlPassword = ConfigList[1];
 
             // Open connection to sql server
             Form1 form1 = new Form1();
-            using (SqlConnection connection = new SqlConnection(form1.ConnectionStrMssql(mssqlUsername, mssqlPassword)))
+            using (SqlConnection MssqlConnection = new SqlConnection(form1.ConnectionStrMssql(MssqlUsername, MssqlPassword)))
             {
 
                 // Connect to MySQL DB using user inputs
-                string mysqlUsername = ConfigList[2];
-                string mysqlPassword = ConfigList[3];
+                string MysqlUsername = ConfigList[2];
+                string MysqlPassword = ConfigList[3];
 
-                using (MySqlConnection mysqlConnection = new MySqlConnection(form1.ConnectionStrMysql(mysqlUsername, mysqlPassword)))
+                using (MySqlConnection MysqlConnection = new MySqlConnection(form1.ConnectionStrMysql(MysqlUsername, MysqlPassword)))
                 {
+                    // Open connection to MSSQL DB
+                    MssqlConnection.Open();
 
+                    // Get id's from Mssql
+                    string MssqlQuery = "SELECT Id FROM Person";
+                    SqlCommand MssqlCommand = new SqlCommand(MssqlQuery, MssqlConnection);
+                    string[] MssqlIdArray = MssqlCommand.ExecuteNonQuery();
+
+                    // Get id's from Mysql
+                    string MysqlQuery = "SELECT Id FROM person_table";
+                    MySqlCommand MysqlCommand = new MySqlCommand(MysqlQuery, MysqlConnection);
+                    string[] MysqlIdArray = MysqlCommand.ExecuteNonQuery();
+
+                    // Keep id's which do not exist in MySQL
+                    var MssqlUniqueIdOnly = MssqlIdArray.Except(MysqlIdArray).ToArray;
+
+                    for (int i = 0; i < MssqlUniqueIdOnly.length; i++)
+                    {
+                        // Get record from Mysql with id from MssqlIdOnly array
+                        string MysqlGetRecordQuery = "SELECT Id FROM person_table WHERE Id='" + MssqlUniqueIdOnly[i] + "'";
+                        SqlCommand MssqlGetRecordCommand = new SqlCommand(MysqlGetRecordQuery, MssqlConnection);
+                        string[] MssqlRecordArray = MssqlGetRecordCommand.ExecuteNonQuery();
+
+                        // Add data to MySQL DB
+                        string query = "INSERT INTO person_table (Id,Name,Age,Address) " +
+                            "VALUES('" + MssqlRecordArray[0] + "','" + MssqlRecordArray[1] + "','" + 
+                            MssqlRecordArray[2] + "','" + MssqlRecordArray[3] + "')";
+                        MySqlCommand MysqlAddRecordCommand = new MySqlCommand(query, MysqlConnection);
+                        MysqlAddRecordCommand.ExecuteNonQuery();
+                    }
+
+                    MssqlConnection.Close();
+                    MysqlConnection.Close();
                 }
                 closeCurrentFormOpenFormTwo();
             }

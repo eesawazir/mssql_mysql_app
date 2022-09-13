@@ -34,8 +34,8 @@
             this.mssqlUsernameLabel = new System.Windows.Forms.Label();
             this.mssqlPasswordLabel = new System.Windows.Forms.Label();
             this.mssqlPasswordTextBox = new System.Windows.Forms.TextBox();
-            this.mysqlPasswordTextBox = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.mysqlPasswordLabel = new System.Windows.Forms.Label();
+            this.mysqlPasswordTextBox = new System.Windows.Forms.TextBox();
             this.mysqlUsernameLabel = new System.Windows.Forms.Label();
             this.mysqlUsernameTextBox = new System.Windows.Forms.TextBox();
             this.configDbButton = new System.Windows.Forms.Button();
@@ -91,22 +91,6 @@
             this.mssqlPasswordTextBox.Size = new System.Drawing.Size(113, 20);
             this.mssqlPasswordTextBox.TabIndex = 14;
             // 
-            // mysqlPasswordTextBox
-            // 
-            this.mysqlPasswordTextBox.AutoSize = true;
-            this.mysqlPasswordTextBox.Location = new System.Drawing.Point(206, 175);
-            this.mysqlPasswordTextBox.Name = "mysqlPasswordTextBox";
-            this.mysqlPasswordTextBox.Size = new System.Drawing.Size(53, 13);
-            this.mysqlPasswordTextBox.TabIndex = 19;
-            this.mysqlPasswordTextBox.Text = "Password";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(209, 200);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(113, 20);
-            this.textBox2.TabIndex = 18;
-            // 
             // mysqlUsernameLabel
             // 
             this.mysqlUsernameLabel.AutoSize = true;
@@ -123,13 +107,30 @@
             this.mysqlUsernameTextBox.Size = new System.Drawing.Size(113, 20);
             this.mysqlUsernameTextBox.TabIndex = 16;
             // 
+            // mysqlPasswordLabel
+            // 
+            this.mysqlPasswordLabel.AutoSize = true;
+            this.mysqlPasswordLabel.Location = new System.Drawing.Point(206, 175);
+            this.mysqlPasswordLabel.Name = "mysqlPasswordLabel";
+            this.mysqlPasswordLabel.Size = new System.Drawing.Size(53, 13);
+            this.mysqlPasswordLabel.TabIndex = 19;
+            this.mysqlPasswordLabel.Text = "Password";
+            // 
+            // mysqlPasswordTextBox
+            // 
+            this.mysqlPasswordTextBox.Location = new System.Drawing.Point(208, 200);
+            this.mysqlPasswordTextBox.Name = "mysqlPasswordTextBox";
+            this.mysqlPasswordTextBox.Size = new System.Drawing.Size(113, 20);
+            this.mysqlPasswordTextBox.TabIndex = 20;
+            // 
             // configDbButton
             // 
             this.configDbButton.Location = new System.Drawing.Point(114, 257);
             this.configDbButton.Name = "configDbButton";
             this.configDbButton.Size = new System.Drawing.Size(156, 23);
-            this.configDbButton.TabIndex = 20;
+            this.configDbButton.TabIndex = 21;
             this.configDbButton.Text = "Configure Databases";
+            this.configDbButton.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
             this.configDbButton.UseVisualStyleBackColor = true;
             this.configDbButton.Click += new System.EventHandler(this.configDbButton_Click);
             // 
@@ -139,8 +140,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(399, 325);
             this.Controls.Add(this.configDbButton);
+            this.Controls.Add(this.mysqlPasswordLabel);
             this.Controls.Add(this.mysqlPasswordTextBox);
-            this.Controls.Add(this.textBox2);
             this.Controls.Add(this.mysqlUsernameLabel);
             this.Controls.Add(this.mysqlUsernameTextBox);
             this.Controls.Add(this.mssqlPasswordLabel);
@@ -163,8 +164,8 @@
         private System.Windows.Forms.Label mssqlUsernameLabel;
         private System.Windows.Forms.Label mssqlPasswordLabel;
         private System.Windows.Forms.TextBox mssqlPasswordTextBox;
-        private System.Windows.Forms.Label mysqlPasswordTextBox;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label mysqlPasswordLabel;
+        private System.Windows.Forms.TextBox mysqlPasswordTextBox;
         private System.Windows.Forms.Label mysqlUsernameLabel;
         private System.Windows.Forms.TextBox mysqlUsernameTextBox;
         private System.Windows.Forms.Button configDbButton;

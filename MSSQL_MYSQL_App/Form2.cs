@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,46 +23,62 @@ namespace MSSQL_MYSQL_App
 
         private void submitButton_Click(object sender, EventArgs e)
         {
-            // Get data from text field and generate id (primary key)
-            string name = nameTextBox.Text;
-            int age = int.Parse(ageTextBox.Text);
-            string address = addressTextBox.Text;
-            Guid id = Guid.NewGuid();
+            string age = ageTextBox.Text;
+            bool isAgeNumeric = int.TryParse(age, out _);
 
-            string FilePath = @"C:/Users/Eesa/Desktop/EasySales%20Internship/Projects/MSSQL_MYSQL_App/MSSQL_MYSQL_App/ConfigData.txt";
-            var ConfigData = File.ReadAllLines(FilePath);
-            var ConfigList = new List<string>(ConfigData);
-
-            // Connect to MSSQL DB using user inputs
-            string mssqlUsername = ConfigList[0];
-            string mssqlPassword = ConfigList[1];
-
-            // Open connection to sql server
-            Form1 form1 = new Form1();
-            using (SqlConnection connection = new 
-                SqlConnection(form1.ConnectionStrMssql(mssqlUsername, mssqlPassword)))
+            if (!isAgeNumeric || String.IsNullOrEmpty(age))
             {
-                // Open connection to MSSQL DB
-                connection.Open();
-
-                // Add data to MSSQL DB
-                string query = string.Format("INSERT INTO Person (Id,Name,Age,Address) " +
-                    "VALUES('{0}','{1}', {2},'{3}')", id, name, age, address);
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-
-                connection.Close();
+                errorProvider1.SetError(ageTextBox, "Age needs to be number");
+                return;
             }
+            else
+            {
+                if (String.IsNullOrEmpty(nameTextBox.Text))
+                {
+                    errorProvider2.SetError(nameTextBox, "Name can not be empty");
+                    return;
+                }
+                string name = nameTextBox.Text;
+                name = name.Replace("'", "''");
 
-            ageTextBox.Text = "";
-            nameTextBox.Text = "";
-            addressTextBox.Text = "";
+                if (String.IsNullOrEmpty(addressTextBox.Text))
+                {
+                    errorProvider3.SetError(addressTextBox, "Address can not be empty");
+                    return;
+                }
+                string address = addressTextBox.Text;
+                address = address.Replace("'", "''");
 
-            // Hide data entry form and show confirm sync form
-            this.Hide();
-            Form3 newForm3 = new Form3();
-            newForm3.ShowDialog();
-            this.Close();
+                Guid id = Guid.NewGuid();
+
+                // Open connection to sql server
+                Form1 form1 = new Form1();
+                using (SqlConnection connection = new SqlConnection(form1.ConnectionStrMssql()))
+                {
+                    System.Diagnostics.Debug.WriteLine(name + "|" + age + "|" + address);
+                    // Open connection to MSSQL DB
+                    connection.Open();
+
+                    // Add data to MSSQL DB
+                    string query = string.Format("INSERT INTO Person (Id,Name,Age,Address) " +
+                        "VALUES('{0}','{1}', {2},'{3}')", id, name, age, address);
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.ExecuteNonQuery();
+
+                    connection.Close();
+                }
+
+                ageTextBox.Text = "";
+                nameTextBox.Text = "";
+                addressTextBox.Text = "";
+
+                // Hide data entry form and show confirm sync form
+                this.Hide();
+                Form3 newForm3 = new Form3();
+                newForm3.ShowDialog();
+                this.Close();
+            }
         }
+
     }
 }
